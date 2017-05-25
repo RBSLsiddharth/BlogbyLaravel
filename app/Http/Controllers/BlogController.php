@@ -66,6 +66,7 @@ class BlogController extends Controller
 
         $result = $this->Blogmodalobject->addthecomment($request->get('commentdata'),$request->get('Blogid'));
         if($result == false){
+
             return view('base');
 
         }else{
