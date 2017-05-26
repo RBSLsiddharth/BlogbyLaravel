@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Redirect;
 
 class BlogController extends Controller
 {
-    public $Blogmodalobject;
+    protected $Blogmodalobject;
     private $listofusers;
 
     public function __construct()
@@ -39,6 +39,7 @@ class BlogController extends Controller
         }
     }
 
+
     function toshowtheblog()
     {
         $result = $this->Blogmodalobject->showtheresult();
@@ -55,6 +56,7 @@ class BlogController extends Controller
         return view('singleview', ['result' => $result, 'listofusers' => $this->listofusers,'comments'=>$comments,'commentstatus'=>'full']);
     }
 
+
     function openasperuser($email)
     {
         $result = $this->Blogmodalobject->openasperemail($email);
@@ -62,15 +64,18 @@ class BlogController extends Controller
     }
 
 
+
     function comments(Request $request){
 
         $result = $this->Blogmodalobject->addthecomment($request->get('commentdata'),$request->get('Blogid'));
         if($result == false){
-
             return view('base');
-
-        }else{
+        }
+        else{
             return view('successfullyupload');
         }
+
+
+
     }
 }
