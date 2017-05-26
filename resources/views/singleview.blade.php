@@ -65,8 +65,7 @@
                             <li class="list-group-item">
                                 {{$task->Commentdoneby}} says: <br>{{$task->Comment}}
                             </li>
-                            <br/>
-                            <br/>
+
                         @endforeach
               @else
                         <div class="row">
