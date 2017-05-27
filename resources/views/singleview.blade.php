@@ -10,6 +10,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
+
 <div class="container">
     <div class="row">
         <div class="col-sm-10">
@@ -48,14 +49,14 @@
                         <h2 align="center">Comments</h2>
                         <br/><br/>
                         <ul class="list-group">
-                            <form method="get" action="\addcomment">
-                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <form>
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}" >
                                 <div class="form-group">
-                                    <input type="text" class="form-control" id="todo" name="commentdata"
-                                           placeholder="Comments please" required>
+                                    <input type="text" class="form-control" id="todo"
+                                           placeholder="Comments please" name="commentdata" required>
                                 </div>
 
-                                <button type="submit" class="btn btn-default" name="Blogid" value="{{$variable}}">Submit</button>
+                                <a class="btn btn-default" name="Blogid" value="{{$variable}}" onclick="return postTheComment()">Submit</a>
                             </form>
                             <br/><br/>
                             @yield('content')
@@ -77,5 +78,24 @@
     </div>
 </div>
 </div>
+    </div>
+</div>
+<script>
+
+
+    function postTheComment(){
+        var _token = $('input[name="_token"]').val();
+/*var commentdata = $('input[name=""]')*/
+        $.ajax({
+            type:'POST',
+            url:" {{  route('addcomment') }}",
+            data:{_token : _token,
+            },
+            success:function(data){
+                alert('successfully uploaded');
+            }
+        });
+    }
+</script>
 </body>
 </html>

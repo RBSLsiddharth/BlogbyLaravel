@@ -48,7 +48,7 @@ class Blogmodel extends Model
         else {
             $result = false;
         }
-        return array($result);
+        return $result;
     }
 
 
