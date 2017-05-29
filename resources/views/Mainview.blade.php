@@ -25,14 +25,12 @@
 
                 <li><a href="\add">ADD YOUR BLOG</a></li>
                 <li>
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Services<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="\show">TO SEE BLOGS Click here</a></li>
-                    </ul>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{\Illuminate\Support\Facades\Auth::user()->name}}</a>
+
                 </li>
                 <li><form id="logout-form" action="{{ url('/logout') }}" method="POST" >
-                      {{--  <input type="hidden" name="_token" value="{{ csrf_token() }}">
---}}
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
                         <button type="submit" class="btn btn-primary btn-xs" >
                             LOGOUT
                         </button>

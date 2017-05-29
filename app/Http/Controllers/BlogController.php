@@ -66,16 +66,12 @@ class BlogController extends Controller
 
 
     function comments(Request $request){
-        echo $request->get('commentdata');
         $result = $this->Blogmodalobject->addthecomment($request->get('commentdata'),$request->get('Blogid'));
-        if($result == false){
-            return view('base');
+        if($result[0] == false) {
+            return response()->json(['status1'=>false]);
         }
         else{
-
-            return response([
-                'status' =>'success'
-            ]);
+                return response()->json(['status1'=>true,'commentDataFromController'=>$result[1],'commentDoneBy'=>$result[2]]);
         }
 
 

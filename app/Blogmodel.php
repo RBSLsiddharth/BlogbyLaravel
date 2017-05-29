@@ -14,6 +14,7 @@ class Blogmodel extends Model
 {
     private $Blogid;
     private $name;
+    private $Blogger;
     private $emailvariable;
     public function addinDatabase($data)
     {
@@ -33,11 +34,13 @@ class Blogmodel extends Model
     public function addthecomment($data,$Blogid){
         $this->Blogid = $Blogid;
         $result =false;
+        $commentdata = $data;
+        $commentdoneby = Auth::user()->email;
         if (!$data == '') {
             DB::table('commenttable')->insert(
                 ['Blogid' => $Blogid, 'Comment' => $data,'Commentdoneby' =>Auth::user()->email]);
 
-         if($this->notifyBloggerWhileCommenting($data)) {
+             if($this->notifyBloggerWhileCommenting($data,$Blogid)) {
 
              $this->notifyOthersWhileCommenting($data);
               $result = true;
@@ -48,7 +51,7 @@ class Blogmodel extends Model
         else {
             $result = false;
         }
-        return $result;
+        return array($result,$commentdata,$commentdoneby);
     }
 
 
@@ -67,24 +70,30 @@ class Blogmodel extends Model
 
 
 
-    public function notifyBloggerWhileCommenting($data)
+    public function notifyBloggerWhileCommenting($data,$Blogid)
     {
+        $this->Blogger = $this->Bloggerwhocreated($Blogid);
+
+        foreach ($this->Blogger as $task) {
+            $this->Blogger = $task;
+        }
+
+        //to check and the mail should not be sent to the one who is the owner of the blog and is commenting on its own blog; otherwise send the mail to others
+
         try {
-            \Mail::raw($data, function ($message) {
-                $Blogger = DB::table('Blog')->select('userwhocreated')->where('id', $this->Blogid)->first();
-
-                foreach ($Blogger as $task) {
-                    $Blogger = $task;
-                }
-                foreach ($this->listofuser() as $name) {
-                    if (!strcmp($name->email, $Blogger)) {
-                        $this->name = $name->name;
+            if(strcmp($this->Blogger,Auth::user()->email)) {
+                \Mail::raw($data, function ($message)  {
+                    foreach ($this->listofuser() as $name) {
+                        //this is for fetching out the name of the blogger
+                        if (!strcmp($name->email, $this->Blogger)) {
+                            $this->name = $name->name;
+                        }
                     }
-                }
-                $message->to($Blogger, $this->name)->subject('Comments from The HappyBlogging');
-            });
-            return true;
+                    $message->to($this->Blogger, $this->name)->subject('Comments from The HappyBlogging');
+                });
 
+            }
+            return true;
         } catch(Exception $e){
            return false;
         }
@@ -103,6 +112,12 @@ class Blogmodel extends Model
         $result = DB::table('Blog')->get();
         return $result;
     }
+
+    public function Bloggerwhocreated($Blogid){
+        $Blogger = DB::table('Blog')->select('userwhocreated')->where('id', $Blogid)->first();
+        return $Blogger;
+    }
+
 
     //to open a particular blog
     public function openit($id)

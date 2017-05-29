@@ -25,7 +25,7 @@ Route::group([
     Route::get('/show','BlogController@toshowtheblog')->name('toshowblog');
 
     Route::get('/add', 'BlogController@handleReq');
-    Route::any('/addcomment',['as'=>'addcomment','uses'=>'BlogController@comments']);
+    Route::post('/addcomment',['as'=>'addcomment','uses'=>'BlogController@comments']);
 
 
     Route::get('/blog/{id}/{userwhocreated}','BlogController@openit');
