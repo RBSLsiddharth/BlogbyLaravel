@@ -4,11 +4,9 @@
 namespace App\Http\Controllers;
 
 use App\Blogmodel;
-use App\Http\Controllers\Auth\LoginController;
+use App\CommentModel;
 use App\TodoModel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
 
 
 class BlogController extends Controller
@@ -21,16 +19,30 @@ class BlogController extends Controller
         $this->middleware('auth');
         $this->Blogmodalobject = new Blogmodel();
         $this->listofusers = $this->Blogmodalobject->listofuser();
-
     }
 
+    function toshowtheblog()
+    {
+        $result = $this->Blogmodalobject->toShowAllTheBlogs();
+        return view('toshowblog', [
+            'result' => $result,
+            'listofusers' => $this->listofusers
+        ]);
+    }
 
+    // index => filtering
+    // show/view/display
+    // add/edit
+    // save
+    // delete
+
+//to handle the request
     public function handleReq(Request $request)
     {
 
         if ($request->input('action') . equalTo('add')) {
 
-            $result = $this->Blogmodalobject->addinDatabase($request->get('data'));
+            $result = $this->Blogmodalobject->addBlogInDatabase($request->get('data'));
             if ($result == false) {
                 return view('base');
             } else {
@@ -39,42 +51,26 @@ class BlogController extends Controller
         }
     }
 
-
-    function toshowtheblog()
-    {
-        $result = $this->Blogmodalobject->showtheresult();
-        return view('toshowblog', ['result' => $result, 'listofusers' => $this->listofusers]);
-    }
-
-
 //to display the further specific blog
     function openit($id, $email)
     {
-        $Blogmodalobject = new Blogmodel();
-        $result = $Blogmodalobject->openit($id);
-        $comments = $Blogmodalobject->opencomment($id);
-        return view('singleview', ['result' => $result, 'listofusers' => $this->listofusers,'comments'=>$comments,'commentstatus'=>'full']);
+        $commentmodelobject = new CommentModel();
+        $result = $this->Blogmodalobject->openTheParticularBlog($id);
+        $comments = $commentmodelobject->opencomment($id);
+        return view('singleview', ['result' => $result, 'listofusers' => $this->listofusers, 'comments' => $comments, 'commentstatus' => 'full']);
     }
 
 
+    //to display as per user's email
     function openasperuser($email)
     {
-        $result = $this->Blogmodalobject->openasperemail($email);
-      return view('singleview', ['result' => $result, 'listofusers' => $this->listofusers,'commentstatus'=>'empty','email'=>$email]);
+        $result = $this->Blogmodalobject->openAsPerEmail($email);
+        return view('singleview', ['result' => $result, 'listofusers' => $this->listofusers, 'commentstatus' => 'empty', 'email' => $email]);
     }
 
 
 
-    function comments(Request $request){
-        $result = $this->Blogmodalobject->addthecomment($request->get('commentdata'),$request->get('Blogid'));
-        if($result[0] == false) {
-            return response()->json(['status1'=>false]);
-        }
-        else{
-                return response()->json(['status1'=>true,'commentDataFromController'=>$result[1],'commentDoneBy'=>$result[2]]);
-        }
 
 
 
-    }
 }

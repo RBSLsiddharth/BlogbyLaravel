@@ -25,11 +25,15 @@ Route::group([
     Route::get('/show','BlogController@toshowtheblog')->name('toshowblog');
 
     Route::get('/add', 'BlogController@handleReq');
-    Route::post('/addcomment',['as'=>'addcomment','uses'=>'BlogController@comments']);
+    Route::any('/addcomment',['as'=>'addcomment','uses'=>'CommentController@addcomments']);
 
+    Route::post('/deletecomment',['as'=>'deletecomment','uses'=>'CommentController@deletecomments']);
 
     Route::get('/blog/{id}/{userwhocreated}','BlogController@openit');
 
+    Route::post('/updatecomment',['as'=>'updatecomment','uses'=>'CommentController@updatecomments']);
+
     Route::get('/user/{email}','BlogController@openasperuser');
+
 
 });

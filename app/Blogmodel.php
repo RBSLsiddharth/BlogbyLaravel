@@ -12,16 +12,18 @@ use Mockery\Exception;
 
 class Blogmodel extends Model
 {
-    private $Blogid;
-    private $name;
-    private $Blogger;
-    private $emailvariable;
-    public function addinDatabase($data)
+
+
+    public function addBlogInDatabase($data)
     {
 
         if (!$data == '') {
-            DB::table('Blog')->insert(
-                ['Blogtext' => $data, 'userwhocreated' => Auth::user()->email]);
+            /*DB::table('Blog')->insert(
+                ['Blogtext' => $data, 'userwhocreated' => Auth::user()->email]);*/
+            $blog = new Blog;
+            $blog->Blogtext = $data;
+            $blog->userwhocreated = Auth::user()->email;
+            $blog->save();
             $result = true;
         } else {
             $result = false;
@@ -30,112 +32,39 @@ class Blogmodel extends Model
     }
 
 
-
-    public function addthecomment($data,$Blogid){
-        $this->Blogid = $Blogid;
-        $result =false;
-        $commentdata = $data;
-        $commentdoneby = Auth::user()->email;
-        if (!$data == '') {
-            DB::table('commenttable')->insert(
-                ['Blogid' => $Blogid, 'Comment' => $data,'Commentdoneby' =>Auth::user()->email]);
-
-             if($this->notifyBloggerWhileCommenting($data,$Blogid)) {
-
-             $this->notifyOthersWhileCommenting($data);
-              $result = true;
-
-         }
-
-        }
-        else {
-            $result = false;
-        }
-        return array($result,$commentdata,$commentdoneby);
-    }
-
-
-    public function notifyOthersWhileCommenting($data){
-        $users = DB::table('commenttable')->select('Commentdoneby')->where ('Blogid',$this->Blogid)->distinct()->get();
-            foreach ($users as $task){
-                if(strcmp($task->Commentdoneby,Auth::user()->email)){
-                    $this->emailvariable=$task->Commentdoneby;
-                    \Mail::raw($data, function ($message) {
-                        $message->to($this->emailvariable,'frommyside' )->subject('Someone has also commented on the same blog as you');
-                    });
-                }
-            }
-
-    }
-
-
-
-    public function notifyBloggerWhileCommenting($data,$Blogid)
-    {
-        $this->Blogger = $this->Bloggerwhocreated($Blogid);
-
-        foreach ($this->Blogger as $task) {
-            $this->Blogger = $task;
-        }
-
-        //to check and the mail should not be sent to the one who is the owner of the blog and is commenting on its own blog; otherwise send the mail to others
-
-        try {
-            if(strcmp($this->Blogger,Auth::user()->email)) {
-                \Mail::raw($data, function ($message)  {
-                    foreach ($this->listofuser() as $name) {
-                        //this is for fetching out the name of the blogger
-                        if (!strcmp($name->email, $this->Blogger)) {
-                            $this->name = $name->name;
-                        }
-                    }
-                    $message->to($this->Blogger, $this->name)->subject('Comments from The HappyBlogging');
-                });
-
-            }
-            return true;
-        } catch(Exception $e){
-           return false;
-        }
-        }
-
-
-
-    public function opencomment($id){
-        return DB::table('commenttable')->where('Blogid',$id)->get();
-
-    }
-
     //to show the list of all blogs
-    public function showtheresult()
+    public function toShowAllTheBlogs()
     {
-        $result = DB::table('Blog')->get();
+        /*$result = DB::table('Blog')->get();*/
+        $result = Blog::all();
         return $result;
+
     }
 
-    public function Bloggerwhocreated($Blogid){
-        $Blogger = DB::table('Blog')->select('userwhocreated')->where('id', $Blogid)->first();
-        return $Blogger;
+    public function bloggerWhoCreatedBlog($Blogid){/*
+        $Blogger = DB::table('Blog')->select('userwhocreated')->where('id', $Blogid)->first();*/
+        $blogger = Blog::find($Blogid);
+        return $blogger->userwhocreated;
     }
 
 
     //to open a particular blog
-    public function openit($id)
+    public function openTheParticularBlog($id)
     {
 
-        return DB::table('Blog')->where('id', $id)->get();
+        return Blog::where('id',$id)->get();
 
     }
 
     //to display according to emailid
-    public function   openasperemail($email)
+    public function   openAsPerEmail($email)
     {
 
-        return DB::table('Blog')->where('userwhocreated', $email)->get();
+        return Blog::where('userwhocreated', $email)->get();
 
     }
 
-    public function listofuser()
+    public function listOfUser()
     {
         return DB::table('users')->select('name', 'email')->get();
     }
