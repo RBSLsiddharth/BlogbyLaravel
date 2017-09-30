@@ -21,7 +21,7 @@ class BlogController extends Controller
         $this->listofusers = $this->Blogmodalobject->listofuser();
     }
 
-    function toshowtheblog()
+    function toShowTheBlog()
     {
         $result = $this->Blogmodalobject->toShowAllTheBlogs();
         return view('toshowblog', [
@@ -52,7 +52,7 @@ class BlogController extends Controller
     }
 
 //to display the further specific blog
-    function openit($id, $email)
+    function openIt($id, $email)
     {
         $commentmodelobject = new CommentModel();
         $result = $this->Blogmodalobject->openTheParticularBlog($id);
@@ -62,7 +62,7 @@ class BlogController extends Controller
 
 
     //to display as per user's email
-    function openasperuser($email)
+    function openAsPerUserEmail($email)
     {
         $result = $this->Blogmodalobject->openAsPerEmail($email);
         return view('singleview', ['result' => $result, 'listofusers' => $this->listofusers, 'commentstatus' => 'empty', 'email' => $email]);

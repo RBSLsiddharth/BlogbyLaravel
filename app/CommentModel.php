@@ -32,14 +32,19 @@ class CommentModel extends Model
         $commentdoneby = Auth::user()->email;
         if (!$data == '') {
 
-            $commentid= DB::table('commenttable')->insertGetId(
-                ['Blogid' => $Blogid, 'Comment' => $data,'Commentdoneby' =>Auth::user()->email]);
+            $commentid= DB::table('commenttable')->insertGetId([
+                'Blogid' => $Blogid,
+                'Comment' => $data,
+                'Commentdoneby' =>Auth::user()->email
+                ]);
 
             if($this->notifyBloggerWhileCommenting($data,$Blogid)) {
 
                 $this->notifyOthersWhileCommenting($data);
                 $result = true;
 
+            }else{
+                //
             }
 
         }

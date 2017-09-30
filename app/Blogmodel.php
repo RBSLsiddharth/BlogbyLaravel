@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redis;
 use Mockery\Exception;
 
 class Blogmodel extends Model
@@ -37,6 +38,8 @@ class Blogmodel extends Model
     {
         /*$result = DB::table('Blog')->get();*/
         $result = Blog::all();
+
+
         return $result;
 
     }
@@ -57,9 +60,7 @@ class Blogmodel extends Model
     }
 
     //to display according to emailid
-    public function   openAsPerEmail($email)
-    {
-
+    public function   openAsPerEmail($email){
         return Blog::where('userwhocreated', $email)->get();
 
     }
@@ -67,6 +68,7 @@ class Blogmodel extends Model
     public function listOfUser()
     {
         return DB::table('users')->select('name', 'email')->get();
+
     }
 
 

@@ -22,18 +22,18 @@ Route::group([
     'middleware' => 'auth',
 ], function () {
 
-    Route::get('/show','BlogController@toshowtheblog')->name('toshowblog');
+    Route::get('/show','BlogController@toShowTheBlog')->name('toshowblog');
 
     Route::get('/add', 'BlogController@handleReq');
-    Route::any('/addcomment',['as'=>'addcomment','uses'=>'CommentController@addcomments']);
+    Route::any('/addcomment',['as'=>'addcomment','uses'=>'CommentController@addComments']);
 
-    Route::post('/deletecomment',['as'=>'deletecomment','uses'=>'CommentController@deletecomments']);
+    Route::post('/deletecomment',['as'=>'deletecomment','uses'=>'CommentController@deleteComments']);
 
-    Route::get('/blog/{id}/{userwhocreated}','BlogController@openit');
+    Route::get('/blog/{id}/{userwhocreated}','BlogController@openIt');
 
-    Route::post('/updatecomment',['as'=>'updatecomment','uses'=>'CommentController@updatecomments']);
+    Route::post('/updatecomment',['as'=>'updatecomment','uses'=>'CommentController@updateComments']);
 
-    Route::get('/user/{email}','BlogController@openasperuser');
+    Route::get('/user/{email}','BlogController@openAsPerUserEmail');
 
 
 });
